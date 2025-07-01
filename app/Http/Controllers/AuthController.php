@@ -10,7 +10,12 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    // 🔐 Inscription
+    public function index(Request $request)
+{
+    return response()->json($request->user());
+}
+
+    //  Inscription
     public function register(Request $request)
     {
        
@@ -32,7 +37,7 @@ class AuthController extends Controller
         ]);
     }
 
-    // 🔐 Connexion
+    // Connexion
     public function login(Request $request)
     {
         $request->validate([
@@ -58,7 +63,7 @@ class AuthController extends Controller
         ]);
     }
 
-    // 🔓 Déconnexion
+    //  Déconnexion
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
