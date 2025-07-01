@@ -6,39 +6,29 @@ use Illuminate\Http\Request;
 
 class AnecdoteController extends Controller
 {
-    // Ajouter une anecdote
-    public function store(Request $request, $id)
+
+
+public function store(Request $request)
 {
     $request->validate([
-        'type' => 'required|in:Bof,Excellent,Technique,Wow!!',
+        'title' => 'required|string|max:255',
+        'category' => 'required|in:histoire,humour,vie quotidienne,echec,succes',
+        'content' => 'required|string|max:500',
     ]);
 
-    $user = $request->user();
-
-    // Empêche de voter deux fois pour le même type sur la même anecdote
-    $exists = Vote::where('user_id', $user->id)
-        ->where('anecdote_id', $id)
-        ->where('type', $request->type)
-        ->exists();
-
-    if ($exists) {
-        return response()->json([
-            'message' => 'Vous avez déjà voté ce type pour cette anecdote.'
-        ], 409);
-    }
-
-    // Création du vote
-    $vote = Vote::create([
-        'user_id' => $user->id,
-        'anecdote_id' => $id,
-        'type' => $request->type,
+    $anecdote = Anecdote::create([
+        'user_id' => $request->user()->id,
+        'title' => $request->title,
+        'category' => $request->category,
+        'content' => $request->content,
     ]);
 
     return response()->json([
-        'message' => 'Vote enregistré avec succès.',
-        'vote' => $vote
+        'message' => 'Anecdote créée avec succès.',
+        'anecdote' => $anecdote
     ], 201);
 }
+
 
 
     //  Afficher toutes les anecdotes avec compteur par type de vote
